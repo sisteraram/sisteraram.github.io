@@ -51,7 +51,7 @@ class Hero extends React.Component {
                       style={{ width: "200px" }}
                     />
                     <p className="lead text-white">
-                      황인재 바보 멍청이 똥개 해삼 말미잘
+                      홍아람 바보 멍청이 똥개 해삼 말미잘
                     </p>
                     <div className="btn-wrapper mt-5">
                       <Button
