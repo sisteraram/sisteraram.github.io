@@ -16,6 +16,8 @@
 
 */
 import React from "react";
+import "../../assets/css/styles.css"
+import Wedding_1 from "../../assets/img/wedding_1.jpg";
 
 // reactstrap components
 import { Button, Container, Row, Col } from "reactstrap";
@@ -67,14 +69,14 @@ function Hero() {
              onClick={handleClick('element-0')}
              selected={isItemSelected('element-0')}
          />
-          <Card
+          <Card2
               itemId='element-1' // NOTE: itemId is required for track items
               title='element-1'
               key='element-1'
               onClick={handleClick('element-1')}
               selected={isItemSelected('element-1')}
           />
-          <Card
+          <Card2
               itemId='element-2' // NOTE: itemId is required for track items
               title='element-2'
               key='element-2'
@@ -86,6 +88,24 @@ function Hero() {
 }
 
 function Card({ onClick, selected, title, itemId }) {
+    const visibility = React.useContext(VisibilityContext);
+
+    return (
+        <div
+            onClick={() => onClick(visibility)}
+            style={{
+                width: '400px',
+            }}
+            tabIndex={0}
+        >
+            <div className="card">
+                <img src={Wedding_1} alt="표지"/>
+            </div>
+        </div>
+    )
+}
+
+function Card2({ onClick, selected, title, itemId }) {
   const visibility = React.useContext(VisibilityContext);
 
   return (
