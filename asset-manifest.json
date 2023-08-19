@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.55058933.css",
-    "main.js": "/static/js/main.415b0353.js",
+    "main.css": "/static/css/main.a3b95b0d.css",
+    "main.js": "/static/js/main.67d340f5.js",
     "static/media/fontawesome-webfont.svg?v=4.7.0": "/static/media/fontawesome-webfont.6878d55e3615ccf40c38.svg",
     "static/media/team-2-800x800.jpg": "/static/media/team-2-800x800.3e08ef145920c93bbe32.jpg",
     "static/media/img-1-1200x1000.jpg": "/static/media/img-1-1200x1000.df1442cf520034feb3b0.jpg",
@@ -17,7 +17,6 @@
     "static/media/fontawesome-webfont.woff?v=4.7.0": "/static/media/fontawesome-webfont.f691f37e57f04c152e23.woff",
     "static/media/ill-2.svg": "/static/media/ill-2.b82bc41ca8f27286779053cc2a544e93.svg",
     "static/media/fontawesome-webfont.woff2?v=4.7.0": "/static/media/fontawesome-webfont.20fd1704ea223900efa9.woff2",
-    "static/media/creativetim-white-slim.png": "/static/media/creativetim-white-slim.c9b2f68e52151075edf1.png",
     "static/media/promo-1.png": "/static/media/promo-1.f39d32d244fa5beabbaf.png",
     "static/media/argon-react.png": "/static/media/argon-react.128d71d316a8e92aff4a.png",
     "static/media/argon-react-white.png": "/static/media/argon-react-white.e4dd3b41697ada43fdcb.png",
@@ -30,7 +29,7 @@
     "index.html": "/index.html"
   },
   "entrypoints": [
-    "static/css/main.55058933.css",
-    "static/js/main.415b0353.js"
+    "static/css/main.a3b95b0d.css",
+    "static/js/main.67d340f5.js"
   ]
 }
