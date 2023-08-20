@@ -4,10 +4,47 @@
     font-weight: normal;
     font-style: normal;
 }
-.react-horizontal-scrolling-menu--scroll-container::-webkit-scrollbar {
-    display: none;
+@font-face {
+    font-family: 'NanumSquareNeo-Variable';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/NanumSquareNeo-Variable.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
 }
-.react-horizontal-scrolling-menu--scroll-container {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+.container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+}
+.container1 {
+    width: 100vw;
+    height: 100vh;
+    /*display: flex;*/
+    /*justify-content: center;*/
+    background: #eee;
+    padding: 20px;
+}
+.card1 {
+    background: #FFF;
+    height: 100vh;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.message {
+    font-family: 'Malgun Gothic';
+    font-weight: 400;
+    font-size: 13px;
+    margin: 50px 0 50px 0;
+    line-height: 2;
+}
+.name {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 30px;
+}
+.location {
+    font-size: 16px;
+    font-weight: 600;
 }
