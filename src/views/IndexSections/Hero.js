@@ -15,9 +15,9 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import React, {useEffect, useRef} from "react";
 import "../../assets/css/styles.css"
-import Wedding_1 from "../../assets/img/wedding_1.jpg";
+import Wedding_1 from "../../assets/img/wedding_1.png";
 
 // reactstrap components
 import { Button, Container, Row, Col } from "reactstrap";
@@ -69,7 +69,7 @@ function Hero() {
              onClick={handleClick('element-0')}
              selected={isItemSelected('element-0')}
          />
-          <Card2
+          <Card1
               itemId='element-1' // NOTE: itemId is required for track items
               title='element-1'
               key='element-1'
@@ -94,12 +94,51 @@ function Card({ onClick, selected, title, itemId }) {
         <div
             onClick={() => onClick(visibility)}
             style={{
-                width: '400px',
+                width: '100vw',
             }}
             tabIndex={0}
         >
             <div className="card">
                 <img src={Wedding_1} alt="표지"/>
+            </div>
+        </div>
+    )
+}
+
+function Card1({ onClick, selected, title, itemId }) {
+    const visibility = React.useContext(VisibilityContext);
+    const mapElement = useRef(null);
+
+    useEffect(() => {
+        const { naver } = window;
+        if (!mapElement.current || !naver) return;
+
+        // 지도에 표시할 위치의 위도와 경도 좌표를 파라미터로 넣어줍니다.
+        const location = new naver.maps.LatLng(37.5656, 126.9769);
+        const mapOptions: naver.maps.MapOptions = {
+            center: location,
+            zoom: 17,
+            zoomControl: true,
+            zoomControlOptions: {
+                position: naver.maps.Position.TOP_RIGHT,
+            },
+        };
+        const map = new naver.maps.Map(mapElement.current, mapOptions);
+        new naver.maps.Marker({
+            position: location,
+            map,
+        });
+    }, []);
+    return (
+        <div
+            onClick={() => onClick(visibility)}
+            style={{
+                width: '100vw',
+            }}
+            tabIndex={0}
+        >
+            <div className="card">
+                <div ref={mapElement} style={{ minHeight: '400px' }} />;
             </div>
         </div>
     )
@@ -112,7 +151,7 @@ function Card2({ onClick, selected, title, itemId }) {
       <div
           onClick={() => onClick(visibility)}
           style={{
-            width: '400px',
+            width: '100vw',
           }}
           tabIndex={0}
       >
@@ -121,13 +160,7 @@ function Card2({ onClick, selected, title, itemId }) {
           <div>visible: {JSON.stringify(!!visibility.isItemVisible(itemId))}</div>
           <div>selected: {JSON.stringify(!!selected)}</div>
         </div>
-        <div
-            style={{
-              height: '800px',
-            }}
-        />
       </div>
   )
 }
-
 export default Hero;
