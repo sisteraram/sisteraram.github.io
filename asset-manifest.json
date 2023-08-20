@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/static/css/main.50ee3e7b.css",
+    "main.css": "/static/css/main.74483a4f.css",
     "main.js": "/static/js/main.d4bf86e5.js",
     "static/media/wedding_1.png": "/static/media/wedding_1.1103d5b60a06105dbe56.png",
     "static/media/fontawesome-webfont.svg?v=4.7.0": "/static/media/fontawesome-webfont.6878d55e3615ccf40c38.svg",
@@ -30,7 +30,7 @@
     "index.html": "/index.html"
   },
   "entrypoints": [
-    "static/css/main.50ee3e7b.css",
+    "static/css/main.74483a4f.css",
     "static/js/main.d4bf86e5.js"
   ]
 }
