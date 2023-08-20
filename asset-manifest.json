@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/static/css/main.f9e60eea.css",
-    "main.js": "/static/js/main.c9247c73.js",
-    "static/media/wedding_1.png": "/static/media/wedding_1.1103d5b60a06105dbe56.png",
+    "main.js": "/static/js/main.fcf86ed3.js",
+    "static/media/wedding_1.png": "/static/media/wedding_1.735bfd3ffd6474f5e744.png",
     "static/media/fontawesome-webfont.svg?v=4.7.0": "/static/media/fontawesome-webfont.6878d55e3615ccf40c38.svg",
     "static/media/fontawesome-webfont.eot": "/static/media/fontawesome-webfont.8b43027f47b20503057d.eot",
     "static/media/fontawesome-webfont.ttf?v=4.7.0": "/static/media/fontawesome-webfont.1e59d2330b4c6deb84b3.ttf",
@@ -21,6 +21,6 @@
   },
   "entrypoints": [
     "static/css/main.f9e60eea.css",
-    "static/js/main.c9247c73.js"
+    "static/js/main.fcf86ed3.js"
   ]
 }
