@@ -512,11 +512,17 @@ function Card5({ onClick, selected, title, itemId }) {
                     {/*<button onClick={() => {
                         shareKakao()
                     }}>공유하기</button>*/}
-                    <div className='name' style={{fontSize: '14px'}}>
-                        <button className='button' onClick={(e)=>showModal('1', e)}>신랑측 계좌번호</button>
+                    <div className='buttonWrapper' onClick={(e)=>showModal('1', e)}>
+                        <div className='button'>
+                            신랑측 계좌번호
+                        </div>
+                        <img src={arrowIcon} alt="화살표 아이콘"/>
                     </div>
-                    <div className='name' style={{fontSize: '14px'}}>
-                        <button className='button' onClick={(e)=>showModal('2', e)}>신부측 계좌번호</button>
+                    <div className='buttonWrapper mg-top-5' onClick={(e)=>showModal('2', e)}>
+                        <div className='button'>
+                            신부측 계좌번호
+                        </div>
+                        <img src={arrowIcon} alt="화살표 아이콘"/>
                     </div>
                     {modalOpen && <Modal flag={flag} setModalOpen={setModalOpen}/>}
                 </div>
