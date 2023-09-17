@@ -14,9 +14,7 @@ function Modal({ setModalOpen, flag, id, title, content, writer }) {
     useEffect(() => {
         // 이벤트 핸들러 함수
         const handler = (event) => {
-            console.log('test', modalRef.current)
-            console.log('test22', event)
-            console.log('test22', modalRef.current.contains(event.target))
+            event.stopPropagation();
             // mousedown 이벤트가 발생한 영역이 모달창이 아닐 때, 모달창 제거 처리
             if (modalRef.current && !modalRef.current.contains(event.target)) {
                 setModalOpen(false);
@@ -35,11 +33,14 @@ function Modal({ setModalOpen, flag, id, title, content, writer }) {
     });
 
     return (
-        <div ref={modalRef} className={styles.container}>
-            <button className={styles.close} onClick={closeModal}>
-                X
-            </button>
-            <p>모달창입니다.</p>
+        <div>
+            <div className={styles.shadow}></div>
+            <div ref={modalRef} className={styles.container}>
+                <button className={styles.close} onClick={closeModal}>
+                    X
+                </button>
+                <p>모달창입니다.</p>
+            </div>
         </div>
     );
 }

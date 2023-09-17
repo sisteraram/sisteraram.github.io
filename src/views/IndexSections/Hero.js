@@ -26,9 +26,11 @@ import MapImg from "../../assets/img/map.png";
 import phoneIcon from "../../assets/img/phone.png";
 import smsIcon from "../../assets/img/message.png";
 import arrowIcon from "../../assets/img/arrow.png";
+import clipboardIcon from "../../assets/img/clipboard.png";
+import {Collapse, UnmountClosed} from 'react-collapse';
 
 //import Modal from 'react-modal';
-import Modal from '../../components/Modal'
+import copy from 'copy-to-clipboard';
 
 // reactstrap components
 import { Button, Container, Row, Col } from "reactstrap";
@@ -95,7 +97,7 @@ function Card2({ onClick, selected, title, itemId }) {
         // 자신의 js 키를 넣어준다.
         Kakao.init('f5805a1aeb1ada33b0b17c8eeec4d185');
         // 잘 적용되면 true 를 뱉는다.
-        console.log(Kakao.isInitialized());
+        // console.log(Kakao.isInitialized());
     });
     return (
         <div className="card container1">
@@ -154,7 +156,7 @@ function Card3({ onClick, selected, title, itemId }) {
         // 자신의 js 키를 넣어준다.
         Kakao.init('f5805a1aeb1ada33b0b17c8eeec4d185');
         // 잘 적용되면 true 를 뱉는다.
-        console.log(Kakao.isInitialized());
+        // console.log(Kakao.isInitialized());
 
 
         const { naver } = window;
@@ -325,11 +327,67 @@ function Card5({ onClick, selected, title, itemId }) {
     const wedding = {Wedding_1};
 
     const [modalOpen, setModalOpen] = useState(false);
-    const [flag, setFlag] = useState("1");
+    const [flag, setFlag] = useState("0");
+    const [isOpened1, setIsOpened1] = useState(false);
+    const [isOpened2, setIsOpened2] = useState(false);
+    const [isOpened3, setIsOpened3] = useState(false);
+
+
 
     const showModal = (params, e) => {
         setFlag(params);
         setModalOpen(true);
+    }
+    const toggleAccordion = (param, e) => {
+        // 초기화
+        setIsOpened1(false);
+        setIsOpened2(false);
+        setIsOpened3(false);
+
+        let classNameList = document.getElementsByClassName('buttonWrapper')
+        for (const className of classNameList){
+            className.classList.remove( 'on' )
+        }
+
+        // 초기화 종료
+
+        let target = e.target.closest('.buttonWrapper')
+
+        switch (param) {
+            case "1":
+                setIsOpened1(!isOpened1)
+                isOpened1 ? target.classList.remove( 'on' ) :  target.classList.add( 'on' );
+                break;
+            case "2":
+                setIsOpened2(!isOpened2)
+                isOpened2 ? target.classList.remove( 'on' ) :  target.classList.add( 'on' );
+            break;
+            case "3":
+                setIsOpened3(!isOpened3)
+                isOpened3 ? target.classList.remove( 'on' ) :  target.classList.add( 'on' );
+            break;
+        }
+    }
+
+    const copyToClipboard = async (text:String) => {
+        try{
+            //await navigator.clipboard.writeText(text);
+            copy(text);
+            let ua = navigator.userAgent.toLowerCase()
+            let isApp = ua.indexOf("android") != -1 || ua.indexOf("ios") != -1
+            
+            // 앱은 기기에서 토스트창 오픈
+            // 웹만 추가
+            if (!isApp) {
+                let tostMessage = document.getElementById('tost_message');
+                tostMessage.classList.add('active');
+                setTimeout(function(){
+                    tostMessage.classList.remove('active');
+                },1000);
+            }
+        } catch (e) {
+            alert('복사 실패');
+        }
     }
 
     useEffect(() => {
@@ -340,20 +398,8 @@ function Card5({ onClick, selected, title, itemId }) {
         // 자신의 js 키를 넣어준다.
         Kakao.init('f5805a1aeb1ada33b0b17c8eeec4d185');
         // 잘 적용되면 true 를 뱉는다.
-        console.log(Kakao.isInitialized());
+        // console.log(Kakao.isInitialized());
     });
-
-    const setAccordion = () =>{
-        let className = document.getElementById('info').className;
-        if (className.includes('on')) {
-            document.getElementById('info').className = 'name'
-            document.getElementById('accordionContent').className = ''
-        } else {
-            document.getElementById('info').className = 'name on'
-            document.getElementById('accordionContent').className = 'on'
-        }
-
-    }
 
     //카톡 공유하기
     const shareKakao = () =>{
@@ -422,109 +468,224 @@ function Card5({ onClick, selected, title, itemId }) {
                             </div>
                         </div>
                     </div>
-                    <div style={{padding:'0 10px 0 10px'}}>
+                    {/*<div style={{padding:'0 10px 0 10px'}}>
                         <div className='name' style={{fontSize: '14px'}} id='info' onClick={() => {
                             setAccordion()
                         }}>
+                            <div className='buttonWrapper'>
+                                <div className='button'>
+                                    신랑측 계좌번호
+                                </div>
+                                <img src={arrowIcon} alt="화살표 아이콘"/>
+                            </div>
                             <div>신랑측</div>
                             <div >
                                 <img className='info_detail' style={{width:'16px', transition : 'transform 1s'}} src={arrowIcon} alt="화살표 아이콘"/>
                             </div>
                             <div>신부측</div>
                         </div>
-                        <div id='accordionContent'>
-                            <div>
-                                <div className='name' style={{flexDirection: 'column'}}>
-                                    <div style={{fontSize: '14px', lineHeight: '2.2'}}>
-                                        아버지  황선익
-                                    </div>
-                                    <div style={{display:'flex', justifyContent: 'center'}}>
-                                        <div style={{marginTop: '2px'}}>
-                                            <a href="tel:01076151510">
-                                                <img style={{width:'19px'}} src={phoneIcon} alt="전화 아이콘"/>
-                                            </a>
-                                        </div>
-                                        <div style={{marginLeft: '10px'}}>
-                                            <a href="sms:01076151510">
-                                                <img style={{width:'26px'}} src={smsIcon} alt="문자 아이콘"/>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className='name' style={{flexDirection: 'column', marginTop: '10px'}}>
-                                    <div style={{fontSize: '14px', lineHeight: '2.2'}}>
-                                        어머니  이미정
-                                    </div>
-                                    <div style={{display:'flex', justifyContent: 'center'}}>
-                                        <div style={{marginTop: '2px'}}>
-                                            <a href="tel:01076151510">
-                                                <img style={{width:'19px'}} src={phoneIcon} alt="전화 아이콘"/>
-                                            </a>
-                                        </div>
-                                        <div style={{marginLeft: '10px'}}>
-                                            <a href="sms:01076151510">
-                                                <img style={{width:'26px'}} src={smsIcon} alt="문자 아이콘"/>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <div className='name' style={{flexDirection: 'column'}}>
-                                    <div style={{fontSize: '14px', lineHeight: '2.2'}}>
-                                        아버지  홍원기
-                                    </div>
-                                    <div style={{display:'flex', justifyContent: 'center'}}>
-                                        <div style={{marginTop: '2px'}}>
-                                            <a href="tel:01076151510">
-                                                <img style={{width:'19px'}} src={phoneIcon} alt="전화 아이콘"/>
-                                            </a>
-                                        </div>
-                                        <div style={{marginLeft: '10px'}}>
-                                            <a href="sms:01076151510">
-                                                <img style={{width:'26px'}} src={smsIcon} alt="문자 아이콘"/>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className='name' style={{flexDirection: 'column', marginTop: '10px'}}>
-                                    <div style={{fontSize: '14px', lineHeight: '2.2'}}>
-                                        어머니  류영진
-                                    </div>
-                                    <div style={{display:'flex', justifyContent: 'center'}}>
-                                        <div style={{marginTop: '2px'}}>
-                                            <a href="tel:01076151510">
-                                                <img style={{width:'19px'}} src={phoneIcon} alt="전화 아이콘"/>
-                                            </a>
-                                        </div>
-                                        <div style={{marginLeft: '10px'}}>
-                                            <a href="sms:01076151510">
-                                                <img style={{width:'26px'}} src={smsIcon} alt="문자 아이콘"/>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
+                    </div>*/}
                     {/*<p>신랑측 계좌번호</p>
                     <p>신부측 계좌번호</p>*/}
                     {/*<button onClick={() => {
                         shareKakao()
                     }}>공유하기</button>*/}
-                    <div className='buttonWrapper' onClick={(e)=>showModal('1', e)}>
+
+                    <div className='buttonWrapper' data-toggle="1" onClick={(e)=>toggleAccordion('1', e)}>
+                        <div className='button'>
+                            혼주에게 연락하기
+                        </div>
+                        <img className='info_detail' src={arrowIcon} alt="화살표 아이콘"/>
+                    </div>
+                    <Collapse isOpened={isOpened1}>
+                        <div className='name' style={{fontSize: '14px'}} id='info'>
+
+                            <div>신랑측</div>
+                        </div>
+                        <div>
+                            <div className='name'>
+                                <div style={{fontSize: '14px', lineHeight: '2.2'}}>
+                                    아버지  황선익
+                                </div>
+                                <div style={{display:'flex', justifyContent: 'center'}}>
+                                    <div style={{marginTop: '2px'}}>
+                                        <a href="tel:01052852752">
+                                            <img style={{width:'19px'}} src={phoneIcon} alt="전화 아이콘"/>
+                                        </a>
+                                    </div>
+                                    <div style={{marginLeft: '10px'}}>
+                                        <a href="sms:01052852752">
+                                            <img style={{width:'26px'}} src={smsIcon} alt="문자 아이콘"/>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='name'>
+                                <div style={{fontSize: '14px', lineHeight: '2.2'}}>
+                                    어머니 이미정
+                                </div>
+                                <div style={{display:'flex', justifyContent: 'center'}}>
+                                    <div style={{marginTop: '2px'}}>
+                                        <a href="tel:01036872752">
+                                            <img style={{width:'19px'}} src={phoneIcon} alt="전화 아이콘"/>
+                                        </a>
+                                    </div>
+                                    <div style={{marginLeft: '10px'}}>
+                                        <a href="sms:01036872752">
+                                            <img style={{width:'26px'}} src={smsIcon} alt="문자 아이콘"/>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='name' style={{fontSize: '14px'}} id='info'>
+
+                            <div>신부측</div>
+                        </div>
+                        <div>
+                            <div className='name'>
+                                <div style={{fontSize: '14px', lineHeight: '2.2'}}>
+                                    아버지  홍원기
+                                </div>
+                                <div style={{display:'flex', justifyContent: 'center'}}>
+                                    <div style={{marginTop: '2px'}}>
+                                        <a href="tel:01087141039">
+                                            <img style={{width:'19px'}} src={phoneIcon} alt="전화 아이콘"/>
+                                        </a>
+                                    </div>
+                                    <div style={{marginLeft: '10px'}}>
+                                        <a href="sms:01087141039">
+                                            <img style={{width:'26px'}} src={smsIcon} alt="문자 아이콘"/>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='name'>
+                                <div style={{fontSize: '14px', lineHeight: '2.2'}}>
+                                    어머니 류영진
+                                </div>
+                                <div style={{display:'flex', justifyContent: 'center'}}>
+                                    <div style={{marginTop: '2px'}}>
+                                        <a href="tel:01062901039">
+                                            <img style={{width:'19px'}} src={phoneIcon} alt="전화 아이콘"/>
+                                        </a>
+                                    </div>
+                                    <div style={{marginLeft: '10px'}}>
+                                        <a href="sms:01062901039">
+                                            <img style={{width:'26px'}} src={smsIcon} alt="문자 아이콘"/>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </Collapse>
+                    <div className='buttonWrapper mg-top-5 ' data-toggle="2" onClick={(e)=>toggleAccordion('2', e)}>
                         <div className='button'>
                             신랑측 계좌번호
                         </div>
-                        <img src={arrowIcon} alt="화살표 아이콘"/>
+                        <img className='info_detail' src={arrowIcon} alt="화살표 아이콘"/>
                     </div>
-                    <div className='buttonWrapper mg-top-5' onClick={(e)=>showModal('2', e)}>
+
+                    <Collapse isOpened={isOpened2}>
+                        <div className='mg-top-5'></div>
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems:'center', fontSize: '14px'}}>
+                            <div style={{textAlign: 'left'}}>
+                                <div>
+                                    황인재
+                                </div>
+                                <div>
+                                    우리 1002 960 176173
+                                </div>
+
+                            </div>
+                            <div>
+                                <img onClick={() => copyToClipboard('우리 1002 960 176173')} src={clipboardIcon} style={{width: '24px'}} alt='복사하기 아이콘'/>
+                            </div>
+                        </div>
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems:'center', fontSize: '14px'}}>
+                            <div style={{textAlign: 'left'}}>
+                                <div>
+                                    황선익
+                                </div>
+                                <div>
+                                    NH농협 207177 52 040235
+                                </div>
+
+                            </div>
+                            <div>
+                                <img onClick={() => copyToClipboard('농협 207177 52 040235')} src={clipboardIcon} style={{width: '24px'}} alt='복사하기 아이콘'/>
+                            </div>
+                        </div>
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems:'center', fontSize: '14px'}}>
+                            <div style={{textAlign: 'left'}}>
+                                <div>
+                                    이미정
+                                </div>
+                                <div>
+                                    NH농협 1076 02 004066
+                                </div>
+
+                            </div>
+                            <div>
+                                <img onClick={() => copyToClipboard('농협 1076 02 004066')} src={clipboardIcon} style={{width: '24px'}} alt='복사하기 아이콘'/>
+                            </div>
+                        </div>
+                    </Collapse>
+                    <div className='buttonWrapper mg-top-5 ' data-toggle="2" onClick={(e)=>toggleAccordion('3', e)}>
                         <div className='button'>
                             신부측 계좌번호
                         </div>
-                        <img src={arrowIcon} alt="화살표 아이콘"/>
+                        <img className='info_detail' src={arrowIcon} alt="화살표 아이콘"/>
                     </div>
-                    {modalOpen && <Modal flag={flag} setModalOpen={setModalOpen}/>}
+
+                    <Collapse isOpened={isOpened3}>
+                        <div className='mg-top-5'></div>
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems:'center', fontSize: '14px'}}>
+                            <div style={{textAlign: 'left'}}>
+                                <div>
+                                    홍아람
+                                </div>
+                                <div>
+                                    KB국민 605301 04 099523
+                                </div>
+
+                            </div>
+                            <div>
+                                <img onClick={() => copyToClipboard('국민 605301 04 099523')} src={clipboardIcon} style={{width: '24px'}} alt='복사하기 아이콘'/>
+                            </div>
+                        </div>
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems:'center', fontSize: '14px'}}>
+                            <div style={{textAlign: 'left'}}>
+                                <div>
+                                    홍원기
+                                </div>
+                                <div>
+                                    NH농협 302 1119 4788 71
+                                </div>
+
+                            </div>
+                            <div>
+                                <img onClick={() => copyToClipboard('NH농협 302 1119 4788 71')} src={clipboardIcon} style={{width: '24px'}} alt='복사하기 아이콘'/>
+                            </div>
+                        </div>
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems:'center', fontSize: '14px'}}>
+                            <div style={{textAlign: 'left'}}>
+                                <div>
+                                    류영진
+                                </div>
+                                <div>
+                                    우리 1002 131 540884
+                                </div>
+
+                            </div>
+                            <div>
+                                <img onClick={() => copyToClipboard('우리 1002 131 540884')} src={clipboardIcon} style={{width: '24px'}} alt='복사하기 아이콘'/>
+                            </div>
+                        </div>
+                    </Collapse>
+
+                    <div id="tost_message">클립보드에 복사되었어요.</div>
                 </div>
             </div>
         </div>
