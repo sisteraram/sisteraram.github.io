@@ -44,7 +44,7 @@ class Index extends React.Component {
   render() {
     return (
       <>
-        <main ref="main">
+        <main style={{background: "#eee"}} ref="main">
           <Hero />
         </main>
       </>

@@ -19,14 +19,26 @@ import React, {useEffect, useRef, useState} from "react";
 import "../../assets/css/styles.css"
 
 import Wedding_1 from "../../assets/img/wedding_1.png";
-import Pic_1 from "../../assets/img/PICT0031.jpg";
-import Pic_3 from "../../assets/img/ririfrifrd.jpg";
-import Pic_2 from "../../assets/img/zlzlzlz.jpg";
+import Wedding_2 from "../../assets/img/wedding_2.png";
+import Pic_1 from "../../assets/img/gallery/photo1.png";
+import Pic_2 from "../../assets/img/gallery/photo2.png";
+import Pic_3 from "../../assets/img/gallery/photo3.png";
+import Pic_4 from "../../assets/img/gallery/photo4.png";
+import Pic_5 from "../../assets/img/gallery/photo5.png";
+import Pic_6 from "../../assets/img/gallery/photo6.png";
+import Pic_7 from "../../assets/img/gallery/photo7.png";
+import Pic_8 from "../../assets/img/gallery/photo8.png";
+import Pic_9 from "../../assets/img/gallery/photo9.png";
 import MapImg from "../../assets/img/map.png";
 import phoneIcon from "../../assets/img/phone.png";
 import smsIcon from "../../assets/img/message.png";
 import arrowIcon from "../../assets/img/arrow.png";
 import clipboardIcon from "../../assets/img/clipboard.png";
+import kakaoIcon from "../../assets/img/kakao.png";
+import shareIcon from "../../assets/img/share.png";
+import divider from "../../assets/img/divider.png";
+import kakaoMapIcon from "../../assets/img/kakao-map.png";
+import naverMapIcon from "../../assets/img/naver-map.png";
 import {Collapse, UnmountClosed} from 'react-collapse';
 
 //import Modal from 'react-modal';
@@ -72,6 +84,7 @@ function Hero() {
           <SwiperSlide>
               <Card5 />
           </SwiperSlide>
+          <div id="tost_message">클립보드에 복사되었어요.</div>
       </Swiper>
   );
 }
@@ -103,7 +116,13 @@ function Card2({ onClick, selected, title, itemId }) {
         <div className="card container1">
             <div className="text-center card1">
                 <div style={{fontSize: '18px', letterSpacing: '5px', flex:'2'}}>
-                    - 초대합니다 -
+                    <div style={{display: 'flex'}}>
+                        <img src={divider} style={{width: '60px', height: '18px', transform: 'scaleX(-1)', filter: 'opacity(0.6) drop-shadow(0 0 0 #001e35)'}} alt=""/>
+                        <div style={{margin: '5px'}}>
+                            <div >초대합니다</div>
+                        </div>
+                        <img src={divider} style={{width: '60px', height: '18px', filter: 'opacity(0.6) drop-shadow(0 0 0 #001e35)'}} alt=""/>
+                    </div>
                 </div>
                 <div className="message" style={{flex:'10'}}>
                     <p>예쁜 예감이 들었다.</p>
@@ -143,6 +162,27 @@ function Card2({ onClick, selected, title, itemId }) {
             </div>
         </div>
     )
+}
+
+async function copyToClipboard(text) {
+    try{
+        //await navigator.clipboard.writeText(text);
+        copy(text);
+        let ua = navigator.userAgent.toLowerCase()
+        let isApp = ua.indexOf("android") != -1 || ua.indexOf("ios") != -1 || ua.indexOf("iphone") != -1
+
+        // 앱은 기기에서 토스트창 오픈
+        // 웹만 추가
+        if (!isApp) {
+            let tostMessage = document.getElementById('tost_message');
+            tostMessage.classList.add('active');
+            setTimeout(function(){
+                tostMessage.classList.remove('active');
+            },1000);
+        }
+    } catch (e) {
+        alert('복사 실패');
+    }
 }
 
 function Card3({ onClick, selected, title, itemId }) {
@@ -201,32 +241,38 @@ function Card3({ onClick, selected, title, itemId }) {
         <div className='card container1'>
             <div className='text-center card1'>
                 <div style={{fontSize: '18px', letterSpacing: '5px',flex:'1'}}>
-                    - 오시는 길 -
+                    <div style={{display: 'flex'}}>
+                        <img src={divider} style={{width: '60px', height: '18px', transform: 'scaleX(-1)', filter: 'opacity(0.6) drop-shadow(0 0 0 #001e35)'}} alt=""/>
+                        <div style={{margin: '5px'}}>
+                            <div >오시는 길</div>
+                        </div>
+                        <img src={divider} style={{width: '60px', height: '18px', filter: 'opacity(0.6) drop-shadow(0 0 0 #001e35)'}} alt=""/>
+                    </div>
                 </div>
-                <div style={{background: 'white', display: 'flex', flexDirection: 'column', textAlign: 'center', padding: '20px', flex:'10'}}>
+                <div style={{background: 'white', display: 'flex', flexDirection: 'column', textAlign: 'center', padding: '10px', flex:'10'}}>
                     {/*<div style={{fontFamily: 'iceJaram-Rg', fontSize: '25px', fontWeight: 'bold', lineHeight: '0', letterSpacing: '3px', color: '#001e35'}}>
                     오시는 길
                 </div>*/}
 
                     <div>
                         <a href='https://map.naver.com/p/entry/place/37117082?c=15.00,0,0,0,dh'>
-                            <img style={{height: '250px'}} src={MapImg} alt=''/>
+                            <img id="map_img" src={MapImg} alt=''/>
                         </a>
                     </div>
                     <div style={{textAlign: 'start'}}>
                         <div className='name'>
-                            <div style={{flex: '1'}}>
+                            <div style={{flex: '0.8'}}>
                                 <span style={{fontSize: '12px'}}>주소</span>
                             </div>
                             <div style={{margin: '0 5px'}}>
                                 <span>|</span>
                             </div>
-                            <div style={{flex: '5'}}>
+                            <div onClick={() => copyToClipboard('서울 중구 청파로 464 3층 채플웨딩홀 아벤티움')} style={{flex: '5'}}>
                                 <span style={{fontSize: '12px'}}>서울 중구 청파로 464 3층 채플웨딩홀 아벤티움</span>
                             </div>
                         </div>
                         <div className='name'>
-                            <div style={{flex: '1'}}>
+                            <div style={{flex: '0.8'}}>
                                 <span style={{fontSize: '12px'}}>지하철</span>
                             </div>
                             <div style={{margin: '0 5px'}}>
@@ -237,7 +283,7 @@ function Card3({ onClick, selected, title, itemId }) {
                             </div>
                         </div>
                         <div className='name'>
-                            <div style={{flex: '1'}}>
+                            <div style={{flex: '0.8'}}>
                                 <span style={{fontSize: '12px'}}>자차</span>
                             </div>
                             <div style={{margin: '0 5px'}}>
@@ -249,6 +295,14 @@ function Card3({ onClick, selected, title, itemId }) {
                             </div>
                         </div>
                     </div>
+                </div>
+                <div style={{flex: '1'}}>
+                    <a href='https://map.kakao.com/link/map/8282484'>
+                    <img src={kakaoMapIcon} style={{width: '40px'}} alt='카카오맵 아이콘'/>
+                    </a>
+                    <a href='https://map.naver.com/p/entry/place/37117082?c=15.00,0,0,0,dh'>
+                    <img src={naverMapIcon} style={{width: '40px', marginLeft: '20px'}} alt='네이버지도 아이콘'/>
+                    </a>
                 </div>
             </div>
 
@@ -262,12 +316,18 @@ function Card4({ onClick, selected, title, itemId }) {
         <div className='card container1'>
             <div className='text-center card1'>
                 <div style={{fontSize: '18px', letterSpacing: '5px', flex:'1'}}>
-                    - 갤러리 -
+                    <div style={{display: 'flex'}}>
+                        <img src={divider} style={{width: '60px', height: '18px', transform: 'scaleX(-1)', filter: 'opacity(0.6) drop-shadow(0 0 0 #001e35)'}} alt=""/>
+                        <div style={{margin: '5px'}}>
+                            <div >갤러리</div>
+                        </div>
+                        <img src={divider} style={{width: '60px', height: '18px', filter: 'opacity(0.6) drop-shadow(0 0 0 #001e35)'}} alt=""/>
+                    </div>
                 </div>
-                <div style={{flex:'10'}}>
+                <div style={{flex:'10', marginTop: '20px'}}>
                     <LightGallery plugins={[lgThumbnail]} mode="lg-fade" mobileSettings={{showCloseIcon:true,download:false}}>
-                        <a href={Wedding_1}>
-                            <img style={{width: '30%'}} alt="" src={Wedding_1} />
+                        <a href={Pic_1}>
+                            <img style={{width: '30%'}} alt="" src={Pic_1} />
                         </a>
                         <a href={Pic_2}>
                             <img style={{width: '30%', margin: '0 5px 0 5px'}} alt="" src={Pic_2} />
@@ -275,45 +335,27 @@ function Card4({ onClick, selected, title, itemId }) {
                         <a href={Pic_3}>
                             <img style={{width: '30%'}} alt="" src={Pic_3} />
                         </a>
-                        <a href={Wedding_1}>
-                            <img style={{width: '30%'}} alt="" src={Wedding_1} />
+                        <a href={Pic_4}>
+                            <img style={{width: '30%'}} alt="" src={Pic_4} />
                         </a>
-                        <a href={Pic_2}>
-                            <img style={{width: '30%', margin: '5px'}} alt="" src={Pic_2} />
+                        <a href={Pic_5}>
+                            <img style={{width: '30%', margin: '5px'}} alt="" src={Pic_5} />
                         </a>
-                        <a href={Pic_3}>
-                            <img style={{width: '30%'}} alt="" src={Pic_3} />
+                        <a href={Pic_6}>
+                            <img style={{width: '30%'}} alt="" src={Pic_6} />
                         </a>
-                        <a href={Wedding_1}>
-                            <img style={{width: '30%'}} alt="" src={Wedding_1} />
+                        <a href={Pic_7}>
+                            <img style={{width: '30%'}} alt="" src={Pic_7} />
                         </a>
-                        <a href={Pic_2}>
-                            <img style={{width: '30%', margin: '0 5px 0 5px'}} alt="" src={Pic_2} />
+                        <a href={Pic_8}>
+                            <img style={{width: '30%', margin: '0 5px 0 5px'}} alt="" src={Pic_8} />
                         </a>
-                        <a href={Pic_3}>
-                            <img style={{width: '30%'}} alt="" src={Pic_3} />
+                        <a href={Pic_9}>
+                            <img style={{width: '30%'}} alt="" src={Pic_9} />
                         </a>
-                        <a href={Wedding_1} style={{display: 'none'}}>
-                            <img style={{width: '30vw', margin: '5px'}} alt="" src={Wedding_1} />
-                        </a>
-                        <a href={Wedding_1} style={{display: 'none'}}>
-                            <img style={{width: '30vw', margin: '5px'}} alt="" src={Wedding_1} />
-                        </a>
-                        <a href={Wedding_1} style={{display: 'none'}}>
-                            <img style={{width: '30vw', margin: '5px'}} alt="" src={Wedding_1} />
-                        </a>
-                        <a href={Wedding_1} style={{display: 'none'}}>
-                            <img style={{width: '30vw', margin: '5px'}} alt="" src={Wedding_1} />
-                        </a>
-                        <a href={Wedding_1} style={{display: 'none'}}>
-                            <img style={{width: '30vw', margin: '5px'}} alt="" src={Wedding_1} />
-                        </a>
-                        <a href={Wedding_1} style={{display: 'none'}}>
-                            <img style={{width: '30vw', margin: '5px'}} alt="" src={Wedding_1} />
-                        </a>
-                        <a href={Wedding_1} style={{display: 'none'}}>
-                            <img style={{width: '30vw', margin: '5px'}} alt="" src={Wedding_1} />
-                        </a>
+                        {/*<a href={Wedding_1} style={{display: 'none'}}>*/}
+                        {/*    <img style={{width: '30vw', margin: '5px'}} alt="" src={Wedding_1} />*/}
+                        {/*</a>*/}
                     </LightGallery>
                 </div>
             </div>
@@ -324,11 +366,11 @@ function Card4({ onClick, selected, title, itemId }) {
 function Card5({ onClick, selected, title, itemId }) {
     const {Kakao} = window;
     const realUrl = "https://sisteraram.github.io";
-    const wedding = {Wedding_1};
+    const wedding = {Wedding_2};
 
     const [modalOpen, setModalOpen] = useState(false);
     const [flag, setFlag] = useState("0");
-    const [isOpened1, setIsOpened1] = useState(false);
+    const [isOpened1, setIsOpened1] = useState(true);
     const [isOpened2, setIsOpened2] = useState(false);
     const [isOpened3, setIsOpened3] = useState(false);
 
@@ -369,27 +411,6 @@ function Card5({ onClick, selected, title, itemId }) {
         }
     }
 
-    const copyToClipboard = async (text:String) => {
-        try{
-            //await navigator.clipboard.writeText(text);
-            copy(text);
-            let ua = navigator.userAgent.toLowerCase()
-            let isApp = ua.indexOf("android") != -1 || ua.indexOf("ios") != -1
-            
-            // 앱은 기기에서 토스트창 오픈
-            // 웹만 추가
-            if (!isApp) {
-                let tostMessage = document.getElementById('tost_message');
-                tostMessage.classList.add('active');
-                setTimeout(function(){
-                    tostMessage.classList.remove('active');
-                },1000);
-            }
-        } catch (e) {
-            alert('복사 실패');
-        }
-    }
-
     useEffect(() => {
         //카카오 공유하기 기능 setting
 
@@ -411,7 +432,7 @@ function Card5({ onClick, selected, title, itemId }) {
             content: {
                 title: '아람❤인재 결혼합니다',
                 description: '11월 25일 (토) 오후 2시\n채플웨딩홀 아벤티움',
-                imageUrl: realUrl + wedding.Wedding_1,
+                imageUrl: realUrl + wedding.Wedding_2,
                 link: {
                     mobileWebUrl: realUrl,
                 },
@@ -426,13 +447,31 @@ function Card5({ onClick, selected, title, itemId }) {
             ],
         });
     }
+
+    const share = () => {
+        if (navigator.share) {
+            navigator.share({
+                title: '아람❤인재 결혼합니다',
+                text: '11월 25일 (토) 오후 2시\n채플웨딩홀 아벤티움',
+                url: realUrl,
+            });
+        }else{
+            alert("공유하기가 지원되지 않는 환경 입니다.")
+        }
+    }
     return (
         <div className="card container1">
             <div className="text-center card1">
                 <div style={{fontSize: '18px', letterSpacing: '5px', flex: '1'}}>
-                    - 마음 전해주실 곳 -
+                    <div style={{display: 'flex'}}>
+                        <img src={divider} style={{width: '60px', height: '18px', transform: 'scaleX(-1)', filter: 'opacity(0.6) drop-shadow(0 0 0 #001e35)'}} alt=""/>
+                        <div style={{margin: '5px'}}>
+                            <div >마음 전하실 곳</div>
+                        </div>
+                        <img src={divider} style={{width: '60px', height: '18px', filter: 'opacity(0.6) drop-shadow(0 0 0 #001e35)'}} alt=""/>
+                    </div>
                 </div>
-                <div className="message" style={{flex: '10', width: '100%', padding: '0 40px'}}>
+                <div className="message" style={{flex: '10', width: '100%', padding: '0 20px'}}>
                     {/*<p style={{fontWeight: 'bold'}}>마음 전해주실 곳</p>*/}
                     <div className='name'>
                         <div style={{fontSize: '16px', lineHeight: '2.2'}}>
@@ -468,30 +507,6 @@ function Card5({ onClick, selected, title, itemId }) {
                             </div>
                         </div>
                     </div>
-                    {/*<div style={{padding:'0 10px 0 10px'}}>
-                        <div className='name' style={{fontSize: '14px'}} id='info' onClick={() => {
-                            setAccordion()
-                        }}>
-                            <div className='buttonWrapper'>
-                                <div className='button'>
-                                    신랑측 계좌번호
-                                </div>
-                                <img src={arrowIcon} alt="화살표 아이콘"/>
-                            </div>
-                            <div>신랑측</div>
-                            <div >
-                                <img className='info_detail' style={{width:'16px', transition : 'transform 1s'}} src={arrowIcon} alt="화살표 아이콘"/>
-                            </div>
-                            <div>신부측</div>
-                        </div>
-
-                    </div>*/}
-                    {/*<p>신랑측 계좌번호</p>
-                    <p>신부측 계좌번호</p>*/}
-                    {/*<button onClick={() => {
-                        shareKakao()
-                    }}>공유하기</button>*/}
-
                     <div className='buttonWrapper' data-toggle="1" onClick={(e)=>toggleAccordion('1', e)}>
                         <div className='button'>
                             혼주에게 연락하기
@@ -499,6 +514,7 @@ function Card5({ onClick, selected, title, itemId }) {
                         <img className='info_detail' src={arrowIcon} alt="화살표 아이콘"/>
                     </div>
                     <Collapse isOpened={isOpened1}>
+                        <div className='mg-top-5'></div>
                         <div className='name' style={{fontSize: '14px'}} id='info'>
 
                             <div>신랑측</div>
@@ -539,8 +555,8 @@ function Card5({ onClick, selected, title, itemId }) {
                                 </div>
                             </div>
                         </div>
+                        <div className='mg-top-5'></div>
                         <div className='name' style={{fontSize: '14px'}} id='info'>
-
                             <div>신부측</div>
                         </div>
                         <div>
@@ -684,8 +700,14 @@ function Card5({ onClick, selected, title, itemId }) {
                             </div>
                         </div>
                     </Collapse>
-
-                    <div id="tost_message">클립보드에 복사되었어요.</div>
+                </div>
+                <div style={{flex: '1'}}>
+                    <img onClick={() => {
+                        shareKakao()
+                    }} src={kakaoIcon} style={{width: '40px'}} alt='카카오톡 공유하기 아이콘'/>
+                    {navigator.share && <img onClick={() => {
+                        share()
+                    }} src={shareIcon} style={{width: '40px', marginLeft: '20px'}} alt='공유하기 아이콘'/>}
                 </div>
             </div>
         </div>
