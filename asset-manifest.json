@@ -1,7 +1,8 @@
 {
   "files": {
-    "main.css": "/static/css/main.c06d9eee.css",
-    "main.js": "/static/js/main.0a703d25.js",
+    "main.css": "/static/css/main.df295f89.css",
+    "main.js": "/static/js/main.afca0af0.js",
+    "static/media/wedding_3.png": "/static/media/wedding_3.fe3f1c654d7160b45da9.png",
     "static/media/photo9.png": "/static/media/photo9.41900044e282ed99b0c8.png",
     "static/media/photo5.png": "/static/media/photo5.c5adbc27e2194cda3c27.png",
     "static/media/photo7.png": "/static/media/photo7.98b94fd588a003a4d08c.png",
@@ -39,7 +40,7 @@
     "index.html": "/index.html"
   },
   "entrypoints": [
-    "static/css/main.c06d9eee.css",
-    "static/js/main.0a703d25.js"
+    "static/css/main.df295f89.css",
+    "static/js/main.afca0af0.js"
   ]
 }
