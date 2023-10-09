@@ -20,6 +20,7 @@ import "../../assets/css/styles.css"
 
 import Wedding_1 from "../../assets/img/wedding_1.png";
 import Wedding_2 from "../../assets/img/wedding_2.png";
+import Wedding_3 from "../../assets/img/wedding_3.png";
 import Pic_1 from "../../assets/img/gallery/photo1.png";
 import Pic_2 from "../../assets/img/gallery/photo2.png";
 import Pic_3 from "../../assets/img/gallery/photo3.png";
@@ -90,9 +91,14 @@ function Hero() {
 }
 
 function Card1({ onClick, selected, title, itemId }) {
+    // url 파라미터 가져오기
+    const params = new URLSearchParams(window.location.search)
+    // 부모님 접속시 다른 사진
+    const division = params.get("division")
+
     return (
         <div className="card container">
-            <img src={Wedding_1} alt="표지"/>
+            <img src={division === "adult" ? Wedding_3 : Wedding_1} alt="표지"/>
         </div>
     )
 }
@@ -366,7 +372,17 @@ function Card4({ onClick, selected, title, itemId }) {
 function Card5({ onClick, selected, title, itemId }) {
     const {Kakao} = window;
     const realUrl = "https://sisteraram.github.io";
-    const wedding = {Wedding_2};
+    const params = new URLSearchParams(window.location.search)
+    const division = params.get("division")
+    let wedding = {Wedding_2}.Wedding_2
+    let divisionUrl = "https://sisteraram.github.io"
+
+    // 부모님 접속시 사진, URL 변경
+    if (division === "adult") {
+        wedding = {Pic_1}.Pic_1
+        divisionUrl += "?division=adult"
+    }
+
 
     const [modalOpen, setModalOpen] = useState(false);
     const [flag, setFlag] = useState("0");
@@ -392,7 +408,6 @@ function Card5({ onClick, selected, title, itemId }) {
         }
 
         // 초기화 종료
-
         let target = e.target.closest('.buttonWrapper')
 
         switch (param) {
@@ -432,16 +447,16 @@ function Card5({ onClick, selected, title, itemId }) {
             content: {
                 title: '아람❤인재 결혼합니다',
                 description: '11월 25일 (토) 오후 2시\n채플웨딩홀 아벤티움',
-                imageUrl: realUrl + wedding.Wedding_2,
+                imageUrl: realUrl + wedding,
                 link: {
-                    mobileWebUrl: realUrl,
+                    mobileWebUrl: divisionUrl,
                 },
             },
             buttons: [
                 {
                     title: '모바일청첩장',
                     link: {
-                        mobileWebUrl: realUrl,
+                        mobileWebUrl: divisionUrl,
                     },
                 }
             ],
@@ -453,7 +468,7 @@ function Card5({ onClick, selected, title, itemId }) {
             navigator.share({
                 title: '아람❤인재 결혼합니다',
                 text: '11월 25일 (토) 오후 2시\n채플웨딩홀 아벤티움',
-                url: realUrl,
+                url: divisionUrl,
             });
         }else{
             alert("공유하기가 지원되지 않는 환경 입니다.")
