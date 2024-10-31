@@ -1,0 +1,89 @@
+@font-face {
+    font-family: 'SUIT-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .btn-primary:hover {
+        background-color: #eba40c !important;
+        border: 1px solid #eba40c !important;
+    }
+}
+
+body {
+    font-family: 'SUIT-Regular';
+    font-weight: 600 ;
+}
+
+h5 {
+    font-family: 'SUIT-Regular';
+    font-weight: 600 ;
+}
+
+.btn-primary {
+    background-color: #FFB413 !important;
+    border: 1px solid #FFB413 !important;
+}
+
+/* .btn-primary:hover {
+    background-color: #eba40c !important;
+    border: 1px solid #eba40c !important;
+} */
+
+.offcanvas {
+    border-top-left-radius: 2rem;
+    border-top-right-radius: 2rem;
+    min-height: 400px;
+    border-top: none !important;
+    --bs-offcanvas-height: auto;
+}
+
+.offcanvas-footer {
+    background-color: #FFB413 !important;
+    color: white !important;
+}
+
+.btn-gray {
+    background-color: #e8e8e8;
+    color: #999999;
+    width: 33%
+}
+.btn-check+.btn:hover, .btn-gray:hover {
+    color: #999999;
+    background-color: #d3d3d3;
+}
+
+
+.btn-check:checked+.btn {
+    border: 1px solid #FFB413 !important;
+    background-color: #FFB413 !important;
+    color: white !important;
+}
+
+#footer-btn {
+    text-align: center;
+    background-color: #FFB413 !important;
+}
+
+#footer-btn .text-muted{
+    color: white !important;
+}
+
+.btn-qty-container span {
+    width: 30px;
+    text-align: center;
+}
+
+.btn-qty {
+    padding: 0.3rem 0.7rem !important;
+}
+
+.btn-refresh {
+    padding-top: 2px;
+}
+
+.menu-list > li {
+    font-weight: 500;
+}

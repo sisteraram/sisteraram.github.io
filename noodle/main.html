@@ -1,10 +1,179 @@
 <!doctype html>
-<html>
+<html lang="ko" class="h-100">
   <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="../noodle/css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <meta charset="utf-8" />
     <title>My test page</title>
   </head>
-  <body>
-    Hello World
+  <body class="d-flex flex-column h-100">
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+      import { getFirestore, collection, addDoc, getDoc, getDocs, setDoc, doc, query, where } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js'
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyBIciXzKLyZWPvVIxZMGFF335s5vvYSoF8",
+        authDomain: "noodle-cb36a.firebaseapp.com",
+        projectId: "noodle-cb36a",
+        storageBucket: "noodle-cb36a.appspot.com",
+        messagingSenderId: "1011205303882",
+        appId: "1:1011205303882:web:9cbf508391c0f5b11140b3"
+      };
+    
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+
+      // const dbService = getFirestore(app);
+      const dbService = getFirestore(app);
+
+
+      const todoForm = document.querySelector("#todo-form");
+      const todoInput = document.querySelector("#todo");
+      const todos = document.querySelector("#todos");
+
+      // todo가 새로 추가됐을 때 호출되는 함수
+      const onSubmit = async (e) => {
+        // 새로고침 방지
+        e.preventDefault();
+
+        // 현재 시각을 아이디로 사용하기 위해서 Date 객체를 불러옴
+        const date = new Date();
+
+        // todo 생성 시각 불러옴
+        const createdAt = date.getTime();
+
+        // dbService에서 todos 컬렉션에 createdAt이라는 아이디를 가진 문서를 생성한다.
+        // 내용은 todo: todo 내용으로 한다. todo 내용은 input에 입력돼있는 내용이다.
+        // set함수를 통해서 생성하고, 내용을 넣어줄 수 있다.
+        // set함수는 같은 id의 문서가 있을 때는 문서의 내용을 덮어쓰기하고,
+        // 없을 때는 새로 추가해준다.
+        // await collection(dbService,"todos").addDoc(`${createdAt}`).set({
+        //   todo: todoInput.value,
+        // });
+
+        await setDoc(doc(dbService,"todos", "test","test2","test5"), {
+          id: 3,
+          totDelAmt: 3000,
+          _500: 1,
+          _1000: 1,
+          _1500: 1,
+          platform: "배민원"
+        });
+
+
+        // todoInput은 비워준다.
+        todoInput.value = "";
+
+
+        // const tempDoc = doc(dbService, "todos", "test")
+        // const doc = await getDoc(tempDoc);
+        const docs = collection(dbService, "todos", "test", "test2");
+        const q = query(docs)
+        const querySnapshot = await getDocs(q);
+
+        querySnapshot.forEach((doc) => {
+          // doc.data() is never undefined for query doc snapshots
+          console.log(doc.id, " => ", doc.data());
+        });
+      };
+
+      // todo form에 submit을 감지하는 이벤트리스너를 추가한다.
+      // submit되면 onSubmit 함수가 호출된다.
+      todoForm.addEventListener("submit", onSubmit);
+    </script>
+
+    <header class="d-flex justify-content-center py-4">
+      <span class="fs-5">배달 매출 계산기</span>
+    </header>
+    <main class="flex-shrink-0">
+      <div id="container">
+        <form id="todo-form">
+          <input type="text" id="todo" />
+          
+          <button type="submit" class="btn">ADD</button>
+        </form>
+        <div id="todos"></div>
+      </div>
+    </main>
+    <footer class="footer mt-auto py-3 bg-light" id="footer-btn"
+            data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">
+      <div class="container">
+        <span class="text-muted">배달 정보 입력</span>
+      </div>
+    </footer>
+    <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
+      <div class="offcanvas-header pt-3 pb-0 px-4 justify-content-between">
+        <div class="px-2 py-2"></div>
+        <h5 id="offcanvasBottomLabel" class="mb-0 fs-5">배달 정보 입력</h5>
+        <div class="btn-refresh">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+            <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+          </svg>
+        </div>
+      </div>
+      <div class="offcanvas-body px-4">
+        <div class="d-flex flex-column">
+          <div class="d-flex flex-column">
+            <label>플랫폼</label>
+            <div class="py-2"></div>
+            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+              <label class="btn btn-gray" for="btnradio1">배민원</label>
+            
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+              <label class="btn btn-gray" for="btnradio2">쿠팡</label>
+            
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+              <label class="btn btn-gray" for="btnradio3">기타</label>
+            </div>
+          </div>
+          <div class="py-3"></div>
+          <div class="d-flex flex-column">
+            <label>메뉴</label>
+            <div class="py-2"></div>
+            <ul class="menu-list list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                국수,덮밥,곱배기
+                <div class="d-flex align-items-center justify-content-between btn-qty-container">
+                  <button type="button" class="btn btn-primary btn-qty">-</button>
+                  <span>0</span>
+                  <button type="button" class="btn btn-primary btn-qty">+</button>
+                </div>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                콩국수,만두,김말국세트
+                <div class="d-flex align-items-center justify-content-between btn-qty-container">
+                  <button type="button" class="btn btn-primary btn-qty">-</button>
+                  <span>0</span>
+                  <button type="button" class="btn btn-primary btn-qty">+</button>
+                </div>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                세트
+                <div class="d-flex align-items-center justify-content-between btn-qty-container">
+                  <button type="button" class="btn btn-primary btn-qty">-</button>
+                  <span>0</span>
+                  <button type="button" class="btn btn-primary btn-qty">+</button>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="py-3"></div>
+        </div>
+      </div>
+      <div class="offcanvas-footer d-flex justify-content-center py-3">
+        추가하기
+      </div>
+    </div>
   </body>
 </html>
