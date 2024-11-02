@@ -15,7 +15,7 @@
     <script type="module">
       // Import the functions you need from the SDKs you need
       import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-      import { getFirestore, collection, addDoc, getDoc, getDocs, setDoc, doc, query, where } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js'
+      import { getFirestore, collection, addDoc, getDoc, getDocs, setDoc, deleteDoc, doc, query, where } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js'
       // TODO: Add SDKs for Firebase products that you want to use
       // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -35,86 +35,276 @@
       // const dbService = getFirestore(app);
       const dbService = getFirestore(app);
 
+      // 오늘 날짜
+      const date = new Date();
+      const year = String(date.getFullYear());
+      const month = String(date.getMonth() + 1);
+      const day = String(date.getDate());
+      const dayList = ['일', '월', '화', '수', '목', '금', '토'];
+      const yoil = dayList[date.getDay()];
 
-      const todoForm = document.querySelector("#todo-form");
-      const todoInput = document.querySelector("#todo");
-      const todos = document.querySelector("#todos");
+      // 매출 내역
+      const salesList = new Map();
 
-      // todo가 새로 추가됐을 때 호출되는 함수
-      const onSubmit = async (e) => {
-        // 새로고침 방지
-        e.preventDefault();
+      // 추가하기 버튼 클릭 이벤트
+      const onAdd = async(e) => {
+        // 생성 시각
+        const createdAt = String(new Date().getTime());
 
-        // 현재 시각을 아이디로 사용하기 위해서 Date 객체를 불러옴
-        const date = new Date();
-
-        // todo 생성 시각 불러옴
-        const createdAt = date.getTime();
-
-        // dbService에서 todos 컬렉션에 createdAt이라는 아이디를 가진 문서를 생성한다.
-        // 내용은 todo: todo 내용으로 한다. todo 내용은 input에 입력돼있는 내용이다.
-        // set함수를 통해서 생성하고, 내용을 넣어줄 수 있다.
-        // set함수는 같은 id의 문서가 있을 때는 문서의 내용을 덮어쓰기하고,
-        // 없을 때는 새로 추가해준다.
-        // await collection(dbService,"todos").addDoc(`${createdAt}`).set({
-        //   todo: todoInput.value,
-        // });
-
-        await setDoc(doc(dbService,"todos", "test","test2","test5"), {
-          id: 3,
-          totDelAmt: 3000,
-          _500: 1,
-          _1000: 1,
-          _1500: 1,
-          platform: "배민원"
+        await setDoc(doc(dbService, year, month, day, createdAt), {
+          _500: $('#_500').text(),
+          _1000: $('#_1000').text(),
+          _1500: $('#_1500').text(),
+          platform: $('.platform-group').find('input:checked').data('platform')
         });
 
+        $('.btn-refresh').trigger('mouseup');
+        $('#bottomClose').trigger('click');
 
-        // todoInput은 비워준다.
-        todoInput.value = "";
+        setList();
+      }
+
+      const addData = document.querySelector("#btn-add");
+      addData.addEventListener("mouseup", onAdd);
 
 
-        // const tempDoc = doc(dbService, "todos", "test")
-        // const doc = await getDoc(tempDoc);
-        const docs = collection(dbService, "todos", "test", "test2");
+      // 수량 버튼 클릭 이벤트
+      $('.btn-qty').on('mouseup',function() {
+        var operator = $(this).text();
+        var qty = Number($(this).siblings('span').text());
+        switch(operator) {
+          case "+":
+            if(qty < 99) qty += 1;
+            break;
+          case "-":
+            if(qty > 0) qty -= 1;
+            break;
+        }
+
+        // 수량 변경
+        $(this).siblings('span').text(qty);
+
+        if(qty == 0) $(this).parent().find('.btn.sub').attr('disabled', true);
+        else if(qty == 99) $(this).parent().find('.btn.add').attr('disabled', true);
+        else $(this).parent().find('.btn').attr('disabled', false);
+        
+        var total = $('.btn-qty-container').find('span').text();
+        // 추가하기 버튼 disabled 처리
+        $('#btn-add').attr('disabled', total == '000')
+
+      })
+
+      // 초기화 버튼 클릭 이벤트
+      $('.btn-refresh').on('mouseup', function() {
+        $('.btn-group').children('label:eq(0)').trigger('click');
+        $('.btn.sub').attr('disabled', true);
+        $('.btn.add').attr('disabled', false);
+        var qtys = $('.btn-qty-container').find('span');
+
+        $(qtys).each(function(idx, el) {
+          $(el).text('0')
+        })
+
+        $('#btn-add').attr('disabled', true);
+      })
+
+      // 목록 조회
+      const setList = async(e) => {
+
+        $('.sales-list').html('');
+        const docs = collection(dbService, year, month, day);
         const q = query(docs)
         const querySnapshot = await getDocs(q);
 
         querySnapshot.forEach((doc) => {
           // doc.data() is never undefined for query doc snapshots
-          console.log(doc.id, " => ", doc.data());
+          salesList.set(doc.id, doc.data());
+          makeListItem(doc)
         });
-      };
 
-      // todo form에 submit을 감지하는 이벤트리스너를 추가한다.
-      // submit되면 onSubmit 함수가 호출된다.
-      todoForm.addEventListener("submit", onSubmit);
+        // 삭제 버튼 클릭 이벤트
+        $('.sales-list li button').on("mouseup", async function() {
+          const id = String($(this).data('id'));
+          console.log(id);
+
+          await deleteDoc(doc(dbService, year, month, day, id));
+
+          setList();
+        })
+
+        let normalObj = await setTotal(docs, 'normal');
+        let baeminObj = await setTotal(docs, 'baemin1');
+        let coupangObj = await setTotal(docs, 'coupang');
+
+        $("#total .col:nth-child(2)").text((normalObj.platformSize + baeminObj.platformSize + coupangObj.platformSize).toLocaleString('ko-KR'));
+        $("#total .col:nth-child(3)").text((normalObj.platformProfit + baeminObj.platformProfit + coupangObj.platformProfit).toLocaleString('ko-KR'));
+        $("#total .col:nth-child(4)").text((normalObj.platformLoss + baeminObj.platformLoss + coupangObj.platformLoss).toLocaleString('ko-KR'));
+        $("#total .col:nth-child(5)").text((normalObj.platformIncome + baeminObj.platformIncome + coupangObj.platformIncome).toLocaleString('ko-KR'));
+
+        (normalObj.platformIncome + baeminObj.platformIncome + coupangObj.platformIncome) > 0 ?
+        $("#total .col:nth-child(5)").addClass('text-green')
+        : $("#total .col:nth-child(5)").addClass('text-red');
+
+
+      }
+      
+      // 통계 계산
+      const setTotal = async(docs, platform) => {
+        // platform  normal, baemin1, coupang 
+        const platformArray = await getDocs(query(docs, where("platform", "==", platform)))
+
+        let platformSize = 0;   //건수
+        let platformProfit = 0; //수입
+        let platformLoss = 0;   //지출
+        let platformIncome = 0; //손익
+        let platformCharge = 0; //배달비
+        let textClass = "";
+
+        switch(platform) {
+          case "normal":
+            platformCharge = 4400;
+            break;
+          case "baemin1":
+            platformCharge = 3000;
+            break;
+          case "coupang":
+            platformCharge = 2900;
+            break;
+        }
+
+
+        platformSize = platformArray.size;
+        platformLoss = platformSize * platformCharge;
+
+        platformArray.forEach((doc) => {
+          platformProfit += (doc.data()._500 * 500) + (doc.data()._1000 * 1000) + (doc.data()._1500 * 1500)
+        });
+
+        platformIncome = platformProfit - platformLoss;
+
+        $("#"+platform+" .col:nth-child(2)").text(platformSize.toLocaleString('ko-KR'));
+        $("#"+platform+" .col:nth-child(3)").text(platformProfit.toLocaleString('ko-KR'));
+        $("#"+platform+" .col:nth-child(4)").text(platformLoss.toLocaleString('ko-KR'));
+        $("#"+platform+" .col:nth-child(5)").text(platformIncome.toLocaleString('ko-KR'));
+
+        platformIncome > 0 ? textClass = "text-green" : textClass = "text-red";
+        $("#"+platform+" .col:nth-child(5)").addClass(textClass);
+        
+        let returnObj = new Object();
+        returnObj.platformSize =  platformSize;
+        returnObj.platformProfit =  platformProfit;
+        returnObj.platformLoss =  platformLoss;
+        returnObj.platformIncome =  platformIncome;
+        return returnObj
+      }
+
+      // li 동적 생성
+      const makeListItem = function(item) {
+        var id = item.id;
+        var data = item.data();
+
+        //console.log(data.platform);
+
+        var innerHTML = '';
+        innerHTML += '<li class="list-group-item">';
+        innerHTML +=    '<div class="d-flex align-items-center">';
+        innerHTML +=      '<img class="badge-platform" src="../noodle/img/' + data.platform + '.png" />';
+        innerHTML +=      '<div class="sales-num-container">';
+        innerHTML +=        '<div class="title-sm">+500</div>';
+        innerHTML +=        '<div><span>' + data._500 + '</span>건</div>';
+        innerHTML +=      '</div>';
+        innerHTML +=      '<div class="sales-num-container">';
+        innerHTML +=        '<div class="title-sm">+1000</div>';
+        innerHTML +=        '<div><span>' + data._1000 + '</span>건</div>';
+        innerHTML +=      '</div>';
+        innerHTML +=      '<div class="sales-num-container">';
+        innerHTML +=        '<div class="title-sm">+1500</div>';
+        innerHTML +=        '<div><span>' + data._1500 + '</span>건</div>';
+        innerHTML +=      '</div>';
+        innerHTML +=    '</div>';
+        innerHTML +=    '<button type="button" class="btn-close btn-delete" aria-label="Close" data-id="' + id + '"></button>';
+        innerHTML += '</li>';
+
+        $('.sales-list').append(innerHTML);
+      }
+
+
+
+      $(document).ready(function(){
+        // 오늘 날짜 세팅
+        $('#today').text(year + '년 ' + month + '월 ' + day + '일 ' + yoil + '요일');
+
+        setList();
+      })
+      
     </script>
-
+    <!--헤더-->
     <header class="d-flex justify-content-center py-4">
-      <span class="fs-5">배달 매출 계산기</span>
+      <span class="fs-5 bold">배달 매출 계산기</span>
     </header>
+    <!--메인-->
     <main class="flex-shrink-0">
-      <div id="container">
-        <form id="todo-form">
-          <input type="text" id="todo" />
-          
-          <button type="submit" class="btn">ADD</button>
-        </form>
-        <div id="todos"></div>
+      <div id="container" class="d-flex px-3 pb-3 flex-column justify-content-between align-items-center">
+        <label id="today">2024년 11월 2일 토요일</label>
+        <div class="list mt-2 container text-center">
+          <div class="row th">
+            <div class="col">플랫폼</div>
+            <div class="col">건수</div>
+            <div class="col">수입</div>
+            <div class="col">지출</div>
+            <div class="col">손익</div>
+          </div>
+          <div class="row" id="normal">
+            <div class="col">일반</div>
+            <div class="col">0</div>
+            <div class="col">0</div>
+            <div class="col">0</div>
+            <div class="col">0</div>
+          </div>
+          <div class="row" id="baemin1">
+            <div class="col">배민1</div>
+            <div class="col">0</div>
+            <div class="col">0</div>
+            <div class="col">0</div>
+            <div class="col">0</div>
+          </div>
+          <div class="row" id="coupang">
+            <div class="col">쿠팡</div>
+            <div class="col">0</div>
+            <div class="col">0</div>
+            <div class="col">0</div>
+            <div class="col">0</div>
+          </div>
+          <div class="row" id="total">
+            <div class="col">합계</div>
+            <div class="col">0</div>
+            <div class="col">0</div>
+            <div class="col">0</div>
+            <div class="col">0</div>
+          </div>
+        </div>
+        <label class="mt-4">매출 내역</label>
+        <div class="overflow-y-auto mt-2 width-100" style="max-height: 35vh;">
+          <ul class="sales-list list-group list-group-flush">
+            
+          </ul>
+        </div>
       </div>
     </main>
+    <!--푸터-->
     <footer class="footer mt-auto py-3 bg-light" id="footer-btn"
             data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">
       <div class="container">
-        <span class="text-muted">배달 정보 입력</span>
+        <span class="text-muted bold">배달 정보 입력</span>
       </div>
     </footer>
+    <!--바텀시트-->
     <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
       <div class="offcanvas-header pt-3 pb-0 px-4 justify-content-between">
         <div class="px-2 py-2"></div>
-        <h5 id="offcanvasBottomLabel" class="mb-0 fs-5">배달 정보 입력</h5>
+        <h5 id="offcanvasBottomLabel" class="mb-0 fs-5 bold">배달 정보 입력</h5>
         <div class="btn-refresh">
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" style="display: none;" id="bottomClose"></button>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
             <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
@@ -126,15 +316,15 @@
           <div class="d-flex flex-column">
             <label>플랫폼</label>
             <div class="py-2"></div>
-            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-              <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
-              <label class="btn btn-gray" for="btnradio1">배민원</label>
+            <div class="btn-group platform-group" role="group" aria-label="Basic radio toggle button group">
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" data-platform="normal" checked>
+              <label class="btn btn-gray" for="btnradio1" >일반</label>
             
-              <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
-              <label class="btn btn-gray" for="btnradio2">쿠팡</label>
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" data-platform="baemin1">
+              <label class="btn btn-gray" for="btnradio2" >배민1</label>
             
-              <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
-              <label class="btn btn-gray" for="btnradio3">기타</label>
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off" data-platform="coupang">
+              <label class="btn btn-gray" for="btnradio3" >쿠팡</label>
             </div>
           </div>
           <div class="py-3"></div>
@@ -145,25 +335,25 @@
               <li class="list-group-item d-flex justify-content-between align-items-center">
                 국수,덮밥,곱배기
                 <div class="d-flex align-items-center justify-content-between btn-qty-container">
-                  <button type="button" class="btn btn-primary btn-qty">-</button>
-                  <span>0</span>
-                  <button type="button" class="btn btn-primary btn-qty">+</button>
+                  <button type="button" class="btn btn-primary btn-qty sub" disabled>-</button>
+                  <span data-price="500" id="_500">0</span>
+                  <button type="button" class="btn btn-primary btn-qty add">+</button>
                 </div>
               </li>
               <li class="list-group-item d-flex justify-content-between align-items-center">
                 콩국수,만두,김말국세트
                 <div class="d-flex align-items-center justify-content-between btn-qty-container">
-                  <button type="button" class="btn btn-primary btn-qty">-</button>
-                  <span>0</span>
-                  <button type="button" class="btn btn-primary btn-qty">+</button>
+                  <button type="button" class="btn btn-primary btn-qty sub" disabled>-</button>
+                  <span data-price="1000" id="_1000">0</span>
+                  <button type="button" class="btn btn-primary btn-qty add">+</button>
                 </div>
               </li>
               <li class="list-group-item d-flex justify-content-between align-items-center">
                 세트
                 <div class="d-flex align-items-center justify-content-between btn-qty-container">
-                  <button type="button" class="btn btn-primary btn-qty">-</button>
-                  <span>0</span>
-                  <button type="button" class="btn btn-primary btn-qty">+</button>
+                  <button type="button" class="btn btn-primary btn-qty sub" disabled>-</button>
+                  <span data-price="1500" id="_1500">0</span>
+                  <button type="button" class="btn btn-primary btn-qty add">+</button>
                 </div>
               </li>
             </ul>
@@ -171,8 +361,8 @@
           <div class="py-3"></div>
         </div>
       </div>
-      <div class="offcanvas-footer d-flex justify-content-center py-3">
-        추가하기
+      <div class="offcanvas-footer d-flex justify-content-center">
+        <button type="button" id="btn-add" class="btn btn-primary full bold py-3" disabled>추가하기</button>
       </div>
     </div>
   </body>
