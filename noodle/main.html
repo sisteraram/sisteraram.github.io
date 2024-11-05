@@ -121,7 +121,6 @@
           salesList.set(doc.id, doc.data());
           makeListItem(doc)
         });
-
         // 삭제 버튼 클릭 이벤트
         $('.sales-list li button').on("mouseup", async function() {
           const id = String($(this).data('id'));
@@ -141,9 +140,23 @@
         $("#total .col:nth-child(4)").text((normalObj.platformLoss + baeminObj.platformLoss + coupangObj.platformLoss).toLocaleString('ko-KR'));
         $("#total .col:nth-child(5)").text((normalObj.platformIncome + baeminObj.platformIncome + coupangObj.platformIncome).toLocaleString('ko-KR'));
 
+
+        $("#total .col:nth-child(5)").removeClass('text-red text-green');
         (normalObj.platformIncome + baeminObj.platformIncome + coupangObj.platformIncome) > 0 ?
         $("#total .col:nth-child(5)").addClass('text-green')
-        : $("#total .col:nth-child(5)").addClass('text-red');
+        : (normalObj.platformIncome + baeminObj.platformIncome + coupangObj.platformIncome) < 0 ?
+         $("#total .col:nth-child(5)").addClass('text-red')
+         :   $("#total .col:nth-child(5)").addClass('');
+
+        $('ul.sales-list').removeClass('show hide')
+        $('div.empty-list').removeClass('show hide')
+        if(querySnapshot.size > 0) {
+          $('ul.sales-list').addClass('show')
+          $('div.empty-list').addClass('hide')
+        }else {
+          $('ul.sales-list').addClass('hide')
+          $('div.empty-list').addClass('show')
+        }
 
         $('#list-wrapper').animate({
           scrollTop: $('#list-wrapper')[0].scrollHeight
@@ -189,7 +202,10 @@
         $("#"+platform+" .col:nth-child(4)").text(platformLoss.toLocaleString('ko-KR'));
         $("#"+platform+" .col:nth-child(5)").text(platformIncome.toLocaleString('ko-KR'));
 
-        platformIncome > 0 ? textClass = "text-green" : textClass = "text-red";
+
+        platformIncome > 0 ? textClass = "text-green" : platformIncome < 0 ? textClass = "text-red" : textClass = "";
+
+        $("#"+platform+" .col:nth-child(5)").removeClass('text-red text-green');
         $("#"+platform+" .col:nth-child(5)").addClass(textClass);
         
         let returnObj = new Object();
@@ -287,7 +303,10 @@
         </div>
         <label class="mt-4">매출 내역</label>
         <div id="list-wrapper" class="overflow-y-auto mt-2 width-100" style="max-height: 35vh;">
-          <ul class="sales-list list-group list-group-flush">
+          <div class="empty-list">
+            <span>데이터가 없습니다.</span>
+          </div>
+          <ul class="sales-list list-group list-group-flush hide">
             
           </ul>
         </div>
