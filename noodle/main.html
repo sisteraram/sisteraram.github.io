@@ -137,7 +137,8 @@
 
       // 초기화 버튼 클릭 이벤트
       $('.btn-refresh').on('mouseup', function() {
-        $('.btn-group').children('label:eq(0)').trigger('click');
+        $('.platform-group').children('label:eq(0)').trigger('click');
+        $('.filter-group').children('label:eq(0)').trigger('click');
         $('.btn.sub').attr('disabled', true);
         $('.btn.add').attr('disabled', false);
         var qtys = $('.btn-qty-container').find('span');
@@ -341,7 +342,7 @@
           </div>
         </div>
         <label class="mt-4">매출 내역</label>
-        <div class="btn-group platform-group width-100 my-2" role="group" aria-label="Basic radio toggle button group">
+        <div class="btn-group filter-group width-100 my-2" role="group" aria-label="Basic radio toggle button group">
           <input type="radio" class="btn-check" name="filter" id="filter1" autocomplete="off" value="all" checked>
           <label class="btn btn-gray" for="filter1" >전체</label>
           <input type="radio" class="btn-check" name="filter" id="filter2" autocomplete="off" value="normal">
