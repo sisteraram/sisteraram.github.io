@@ -9,7 +9,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <meta charset="utf-8" />
-    <title>My test page</title>
+    <meta name="mobile-web-app-capable" content="yes"/>
+    <title>Noodle</title>
   </head>
   <body class="d-flex flex-column h-100">
     <script type="module">
@@ -28,6 +29,10 @@
         messagingSenderId: "1011205303882",
         appId: "1:1011205303882:web:9cbf508391c0f5b11140b3"
       };
+
+      const COST_NORMAL = 4400;
+      const COST_BAEMIN = 3000;
+      const COST_COUPANG = 2900;
     
       // Initialize Firebase
       const app = initializeApp(firebaseConfig);
@@ -46,6 +51,27 @@
       // 매출 내역
       const salesList = new Map();
 
+      // 일반 배달 클릭 시 인풋 활성화 처리
+      $('input[type=radio][name=btnradio]').change(function() {
+        var id = $(this).attr('id');
+        var disabled = true;
+        var cost = COST_NORMAL;
+
+        switch(id) {
+          case 'btnradio1':
+            disabled = false;
+            break;
+          case 'btnradio2':
+            cost = COST_BAEMIN;
+            break;
+          case 'btnradio3':
+            cost = COST_COUPANG;
+            break;
+        }
+        $('#costInput').val(cost);
+        $('#costInput').attr('disabled', disabled);
+      })
+
       // 추가하기 버튼 클릭 이벤트
       const onAdd = async(e) => {
         // 생성 시각
@@ -55,6 +81,7 @@
           _500: $('#_500').text(),
           _1000: $('#_1000').text(),
           _1500: $('#_1500').text(),
+          cost: $('#costInput').val(),
           platform: $('.platform-group').find('input:checked').data('platform')
         });
 
@@ -104,6 +131,8 @@
         $(qtys).each(function(idx, el) {
           $(el).text('0')
         })
+
+        $('input[type=number]').val(4400)
 
         $('#btn-add').attr('disabled', true);
       })
@@ -175,24 +204,25 @@
         let platformCharge = 0; //배달비
         let textClass = "";
 
-        switch(platform) {
-          case "normal":
-            platformCharge = 4400;
-            break;
-          case "baemin1":
-            platformCharge = 3000;
-            break;
-          case "coupang":
-            platformCharge = 2900;
-            break;
-        }
+        // switch(platform) {
+        //   case "normal":
+        //     platformCharge = 4400;
+        //     break;
+        //   case "baemin1":
+        //     platformCharge = 3000;
+        //     break;
+        //   case "coupang":
+        //     platformCharge = 2900;
+        //     break;
+        // }
 
 
         platformSize = platformArray.size;
-        platformLoss = platformSize * platformCharge;
+        //platformLoss = platformSize * platformCharge;
 
         platformArray.forEach((doc) => {
           platformProfit += (doc.data()._500 * 500) + (doc.data()._1000 * 1000) + (doc.data()._1500 * 1500)
+          platformLoss += Number(doc.data().cost)
         });
 
         platformIncome = platformProfit - platformLoss;
@@ -255,6 +285,13 @@
         setList();
       })
       
+    </script>
+    <script type="text/javascript">
+      function maxLengthCheck(object) {
+        if(object.value.length > object.maxLength) {
+          object.value = object.value.slice(0, object.maxLength);
+        }
+      }
     </script>
     <!--헤더-->
     <header class="d-flex justify-content-center py-4">
@@ -348,7 +385,11 @@
               <label class="btn btn-gray" for="btnradio3" >쿠팡</label>
             </div>
           </div>
-          <div class="py-3"></div>
+          <div class="d-flex flex-column" id="costInputWrapper">
+            <div class="py-2"></div>
+            <input class="form-control" id="costInput" type="number"  maxlength="5" oninput="maxLengthCheck(this)" placeholder="플랫폼에 지불하는 배달비 입력" aria-label="default input example" value="4400">
+          </div>
+          <div class="py-2"></div>
           <div class="d-flex flex-column">
             <label>메뉴</label>
             <div class="py-2"></div>
