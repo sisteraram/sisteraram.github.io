@@ -72,6 +72,20 @@
         $('#costInput').attr('disabled', disabled);
       })
 
+      $('input[type=radio][name=filter]').change(function() {
+        var checkedValue = $(this).val();
+        var html = '';
+        
+        $('li.history').filter(function(idx, elem, arr){
+          $(elem).css('display', 'flex');
+          if(checkedValue == 'all') {
+            return true;
+          }else if(checkedValue != $(elem).data('platform')) {
+            $(elem).css('display', 'none');
+          }
+        })
+      })
+
       // 추가하기 버튼 클릭 이벤트
       const onAdd = async(e) => {
         // 생성 시각
@@ -82,7 +96,7 @@
           _1000: $('#_1000').text(),
           _1500: $('#_1500').text(),
           cost: $('#costInput').val(),
-          platform: $('.platform-group').find('input:checked').data('platform')
+          platform: $('.platform-group').find('input[name=btnradio]:checked').data('platform')
         });
 
         $('.btn-refresh').trigger('mouseup');
@@ -204,18 +218,6 @@
         let platformCharge = 0; //배달비
         let textClass = "";
 
-        // switch(platform) {
-        //   case "normal":
-        //     platformCharge = 4400;
-        //     break;
-        //   case "baemin1":
-        //     platformCharge = 3000;
-        //     break;
-        //   case "coupang":
-        //     platformCharge = 2900;
-        //     break;
-        // }
-
 
         platformSize = platformArray.size;
         //platformLoss = platformSize * platformCharge;
@@ -254,7 +256,7 @@
         //console.log(data.platform);
 
         var innerHTML = '';
-        innerHTML += '<li class="list-group-item">';
+        innerHTML += '<li class="list-group-item history" data-platform=' + data.platform + '>';
         innerHTML +=    '<div class="d-flex align-items-center">';
         innerHTML +=      '<img class="badge-platform" src="../noodle/img/' + data.platform + '.png" />';
         innerHTML +=      '<div class="sales-num-container">';
@@ -339,7 +341,18 @@
           </div>
         </div>
         <label class="mt-4">매출 내역</label>
+        <div class="btn-group platform-group width-100 my-2" role="group" aria-label="Basic radio toggle button group">
+          <input type="radio" class="btn-check" name="filter" id="filter1" autocomplete="off" value="all" checked>
+          <label class="btn btn-gray" for="filter1" >전체</label>
+          <input type="radio" class="btn-check" name="filter" id="filter2" autocomplete="off" value="normal">
+          <label class="btn btn-gray" for="filter2" >일반</label>
+          <input type="radio" class="btn-check" name="filter" id="filter3" autocomplete="off" value="baemin1">
+          <label class="btn btn-gray" for="filter3" >배민1</label>
+          <input type="radio" class="btn-check" name="filter" id="filter4" autocomplete="off" value="coupang">
+          <label class="btn btn-gray" for="filter4" >쿠팡</label>
+        </div>
         <div id="list-wrapper" class="overflow-y-auto mt-2 width-100" style="max-height: 35vh;">
+          
           <div class="empty-list">
             <span>데이터가 없습니다.</span>
           </div>
