@@ -168,10 +168,10 @@
         // 삭제 버튼 클릭 이벤트
         $('.sales-list li button').on("mouseup", async function() {
           const id = String($(this).data('id'));
-          console.log(id);
 
           await deleteDoc(doc(dbService, year, month, day, id));
 
+          $('.filter-group').children('label:eq(0)').trigger('click');
           setList();
         })
 
